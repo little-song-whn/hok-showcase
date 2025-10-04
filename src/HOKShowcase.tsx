@@ -241,7 +241,6 @@ export default function HOKShowcase() {
           <Card className="rounded-2xl">
             <CardHeader>
               <CardTitle>示例图片</CardTitle>
-              <CardDescription>把图片命名为 <code>hok-hero.jpg</code> 并放入 <code>/public/images/</code>。</CardDescription>
             </CardHeader>
             <CardContent>
               <MediaImage src="/images/hok-hero.jpg" alt="HOK Hero" className="rounded-2xl w-full aspect-video object-cover" />
@@ -250,7 +249,6 @@ export default function HOKShowcase() {
           <Card className="rounded-2xl">
             <CardHeader>
               <CardTitle>示例视频</CardTitle>
-              <CardDescription>把视频命名为 <code>hok-demo.mp4</code> 并放入 <code>/public/videos/</code>。</CardDescription>
             </CardHeader>
             <CardContent>
               <MediaVideo src="/videos/hok-demo.mp4" poster="/images/hok-hero.jpg" className="rounded-2xl w-full aspect-video" />
@@ -552,7 +550,7 @@ export default function HOKShowcase() {
           <CardContent className="py-6">
             <div className="grid md:grid-cols-2 gap-6 items-start">
               <div>
-                <p className="text-sm text-muted-foreground">感谢课题组老师与同学的支持与协作，特别感谢在点云融合与 ROS 领域给予技术帮助的伙伴。欢迎交流合作与应用落地。</p>
+                <p className="text-sm text-muted-foreground">感谢俞扬老师和袁雷老师对本项目的大力支持与帮助。特别感谢课题组中的张智龙师兄、杜兴豪师兄与任浩翔师兄，得益于他们的协助，我们得以快速将课题组现有的数据采集装置应用于本项目，并成功实现了采集标定与rollout 标定的功能。此外，我们还要衷心感谢来自北京理工大学的梅云鹏学长与曹宏杰学长，他们在点云融合与ROS 相关工作中提供了宝贵的技术支持。</p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <Badge variant="secondary">PaliGemma</Badge>
                   <Badge variant="secondary">π0</Badge>
