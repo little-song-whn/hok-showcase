@@ -180,7 +180,7 @@ export default function HOKShowcase() {
               <CardContent className="p-0 overflow-hidden">
                 <figure className="aspect-video w-full bg-muted flex items-center justify-center">
                   <img
-                    src="/images/hero.jpg"
+                    src="/images/hok-hero.jpg"
                     alt="系统效果图"
                     className="w-full h-full object-cover"
                   />
