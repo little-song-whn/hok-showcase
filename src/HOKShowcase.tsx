@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 // Icons: avoid non-existent names (e.g., Robot). Use existing lucide icons only.
 import { Cpu, Brain, Bot, Database, Layers, Mic, Github, Link as LinkIcon, ChevronRight, Sparkles, Users, BarChart2, ShieldCheck, Settings2, PlayCircle, FileText } from "lucide-react";
@@ -52,6 +52,29 @@ const Stat = ({ label, value }: StatProps) => (
   </Card>
 );
 
+// —— 媒体组件：图片/视频带占位与加载失败回退
+function MediaImage({ src, alt, className = "" }: { src: string; alt?: string; className?: string }) {
+  const [ok, setOk] = useState(true);
+  return ok ? (
+    <img src={src} alt={alt ?? "image"} className={`block ${className}`} onError={() => setOk(false)} />
+  ) : (
+    <figure className={`bg-muted rounded-xl flex items-center justify-center ${className}`}>
+      <span className="text-sm text-gray-600">（图片占位：请把文件放到 /public/images，例如 {src}）</span>
+    </figure>
+  );
+}
+
+function MediaVideo({ src, poster, className = "", autoPlay=false, loop=false, muted=false }: { src: string; poster?: string; className?: string; autoPlay?: boolean; loop?: boolean; muted?: boolean }) {
+  const [ok, setOk] = useState(true);
+  return ok ? (
+    <video src={src} poster={poster} controls className={`block ${className}`} autoPlay={autoPlay} loop={loop} muted={muted} onError={() => setOk(false)} />
+  ) : (
+    <figure className={`bg-muted rounded-xl flex items-center justify-center ${className}`}>
+      <span className="text-sm text-gray-600">（视频占位：请把文件放到 /public/videos，例如 {src}）</span>
+    </figure>
+  );
+}
+
 const steps = [
   { icon: <Database className="w-5 h-5"/>, title: "数据收集", desc: "基于 Joylo 装置，2 个月收集 5 个大任务，共 10000+ 轨迹，10TB+ 专家数据。", pill: "Joylo" },
   { icon: <Layers className="w-5 h-5"/>, title: "数据治理", desc: "perfect / imperfect / failed 三类标签化；归一化与对齐，多视角图像 + 状态 + 动作序列。", pill: "标注" },
@@ -75,7 +98,7 @@ function DiagnosticsPanel() {
         {checks.map((c) => (
           <li key={c.name} className="flex items-center justify-between gap-3">
             <span>{c.name}{c.note ? `（${c.note}）` : ""}</span>
-            <Badge>{c.pass ? "PASS" : "FAIL"}</Badge>
+            <Badge variant={c.pass ? "secondary" : "destructive"}>{c.pass ? "PASS" : "FAIL"}</Badge>
           </li>
         ))}
       </ul>
@@ -93,7 +116,7 @@ export default function HOKShowcase() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* 顶部导航 */}
-      <header className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b bg-white">
+      <header className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
         <div className="mx-auto max-w-6xl px-4 h-16 flex items-center justify-between">
           <a href="#hero" className="flex items-center gap-2 font-semibold">
             <Bot className="w-5 h-5"/>
@@ -102,6 +125,7 @@ export default function HOKShowcase() {
           <nav className="hidden md:flex items-center gap-4 text-sm">
             {[
               ["摘要", "abstract"],
+              ["媒体库", "media"],
               ["挑战与创新", "challenges"],
               ["系统与流程", "system"],
               ["数据与训练", "data"],
@@ -115,7 +139,7 @@ export default function HOKShowcase() {
             ))}
           </nav>
           <div className="hidden md:block">
-            <Button asChild>
+            <Button asChild size="sm">
               <a href="#contact">联系我们</a>
             </Button>
           </div>
@@ -126,16 +150,16 @@ export default function HOKShowcase() {
       <section id="hero" className="relative overflow-hidden">
         <div className="mx-auto max-w-6xl px-4 py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center">
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <Badge className="mb-3">HOK（Honor Of King）</Badge>
+            <Badge className="mb-3" variant="secondary">HOK（Honor Of King）</Badge>
             <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight">长序协整：办公场景全身控制决策引擎</h1>
-            <p className="mt-4 text-lg text-gray-600 max-w-xl">
+            <p className="mt-4 text-lg text-muted-foreground max-w-xl">
               通过海量真实专家轨迹、改进的 VLM/VLA 模型与行为克隆微调，机器人可理解自然语言并在真实办公环境中完成长序任务。
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Badge className="gap-1"><Cpu className="w-3.5 h-3.5"/> PaliGemma</Badge>
-              <Badge className="gap-1"><Sparkles className="w-3.5 h-3.5"/> π0 Flow</Badge>
-              <Badge className="gap-1"><Database className="w-3.5 h-3.5"/> 10TB 数据</Badge>
-              <Badge className="gap-1"><Settings2 className="w-3.5 h-3.5"/> Whole-Body</Badge>
+              <Badge variant="outline" className="gap-1"><Cpu className="w-3.5 h-3.5"/> PaliGemma</Badge>
+              <Badge variant="outline" className="gap-1"><Sparkles className="w-3.5 h-3.5"/> π0 Flow</Badge>
+              <Badge variant="outline" className="gap-1"><Database className="w-3.5 h-3.5"/> 10TB 数据</Badge>
+              <Badge variant="outline" className="gap-1"><Settings2 className="w-3.5 h-3.5"/> Whole-Body</Badge>
             </div>
             <div className="mt-8 flex gap-3">
               <Button asChild>
@@ -143,7 +167,7 @@ export default function HOKShowcase() {
                   <PlayCircle className="w-4 h-4"/> 查看演示
                 </a>
               </Button>
-              <Button asChild>
+              <Button variant="outline" asChild>
                 <a href="#system" className="inline-flex items-center gap-2">
                   了解系统 <ChevronRight className="w-4 h-4"/>
                 </a>
@@ -157,7 +181,7 @@ export default function HOKShowcase() {
                 <figure className="aspect-video w-full bg-muted flex items-center justify-center">
                   <div className="text-center p-6">
                     <Bot className="w-10 h-10 mx-auto"/>
-                    <p className="mt-3 text-sm text-gray-600">在此嵌入真机视频或效果大图（支持外链）</p>
+                    <p className="mt-3 text-sm text-muted-foreground">在此嵌入真机视频或效果大图（支持外链）</p>
                   </div>
                 </figure>
               </CardContent>
@@ -180,21 +204,45 @@ export default function HOKShowcase() {
               <CardTitle className="flex items-center gap-2 text-xl"><Mic className="w-5 h-5"/> 指令理解</CardTitle>
               <CardDescription>实时语音转文字 → 自然语言指令解析与场景溯源。</CardDescription>
             </CardHeader>
-            <CardContent className="text-sm text-gray-600">“请把桌上的水杯放到茶几上”等含歧义表达通过上下文解析与多视角关联实现 disambiguation。</CardContent>
+            <CardContent className="text-sm text-muted-foreground">“请把桌上的水杯放到茶几上” 等含歧义表达通过上下文解析与多视角关联实现 disambiguation。</CardContent>
           </Card>
           <Card className="rounded-2xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-xl"><Brain className="w-5 h-5"/> 连续动作生成</CardTitle>
               <CardDescription>π0 流匹配分布 + PaliGemma 感知骨干。</CardDescription>
             </CardHeader>
-            <CardContent className="text-sm text-gray-600">自回归全身去噪，按运动学树（底盘→躯干→双臂）生成协调动作，提升稳定性与精度。</CardContent>
+            <CardContent className="text-sm text-muted-foreground">自回归全身去噪，按运动学树（底盘→躯干→双臂）生成协调动作，提升稳定性与精度。</CardContent>
           </Card>
           <Card className="rounded-2xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-xl"><ShieldCheck className="w-5 h-5"/> 鲁棒性</CardTitle>
               <CardDescription>引入 imperfect / adversarial 数据增强容错与恢复。</CardDescription>
             </CardHeader>
-            <CardContent className="text-sm text-gray-600">面对遮挡、光照变化、执行偏差等干扰具备自恢复能力，减少长链条崩溃。</CardContent>
+            <CardContent className="text-sm text-muted-foreground">面对遮挡、光照变化、执行偏差等干扰具备自恢复能力，减少长链条崩溃。</CardContent>
+          </Card>
+        </div>
+      </Section>
+
+      {/* 媒体库：请把图片放到 /public/images，视频放到 /public/videos */}
+      <Section id="media" title="媒体库" subtitle="将素材放到项目的 /public/images 与 /public/videos 目录，部署后即可通过 CDN 加速加载。">
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card className="rounded-2xl">
+            <CardHeader>
+              <CardTitle>示例图片</CardTitle>
+              <CardDescription>把图片命名为 <code>hok-hero.jpg</code> 并放入 <code>/public/images/</code>。</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <MediaImage src="/images/hok-hero.jpg" alt="HOK Hero" className="rounded-2xl w-full aspect-video object-cover" />
+            </CardContent>
+          </Card>
+          <Card className="rounded-2xl">
+            <CardHeader>
+              <CardTitle>示例视频</CardTitle>
+              <CardDescription>把视频命名为 <code>hok-demo.mp4</code> 并放入 <code>/public/videos/</code>。</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <MediaVideo src="/videos/hok-demo.mp4" poster="/images/hok-hero.jpg" className="rounded-2xl w-full aspect-video" />
+            </CardContent>
           </Card>
         </div>
       </Section>
@@ -207,7 +255,7 @@ export default function HOKShowcase() {
               <CardTitle>挑战</CardTitle>
               <CardDescription>感知 / 理解 / 控制 / 系统集成四线并进。</CardDescription>
             </CardHeader>
-            <CardContent className="text-sm text-gray-600 space-y-2">
+            <CardContent className="text-sm text-muted-foreground space-y-2">
               <p>• 复杂光照与遮挡、物品多样性与相似性。</p>
               <p>• 指令歧义（如“放到那边”需上下文约束）。</p>
               <p>• 高维连续控制、精细抓取、防碰撞与安全。</p>
@@ -219,7 +267,7 @@ export default function HOKShowcase() {
               <CardTitle>关键创新</CardTitle>
               <CardDescription>以数据与架构双轮驱动跨越长序障碍。</CardDescription>
             </CardHeader>
-            <CardContent className="text-sm text-gray-600 space-y-2">
+            <CardContent className="text-sm text-muted-foreground space-y-2">
               <p>• 引入 imperfect/failed 轨迹，面向真实世界鲁棒性训练。</p>
               <p>• R1Inputs/R1Outputs 统一多视角图像与 21 维状态-动作格式。</p>
               <p>• 自回归 whole-body 去噪，沿运动学树次序补偿误差。</p>
@@ -244,9 +292,9 @@ export default function HOKShowcase() {
                     <div className="mt-1 shrink-0">{s.icon}</div>
                     <div>
                       <div className="text-sm font-medium flex items-center gap-2">
-                        {s.title} <Badge>{s.pill}</Badge>
+                        {s.title} <Badge variant="secondary">{s.pill}</Badge>
                       </div>
-                      <p className="text-sm text-gray-600 mt-1">{s.desc}</p>
+                      <p className="text-sm text-muted-foreground mt-1">{s.desc}</p>
                     </div>
                   </li>
                 ))}
@@ -257,7 +305,7 @@ export default function HOKShowcase() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2"><Cpu className="w-5 h-5"/> 模块要点</CardTitle>
             </CardHeader>
-            <CardContent className="text-sm text-gray-600 space-y-3">
+            <CardContent className="text-sm text-muted-foreground space-y-3">
               <p><b>R1Inputs</b>：解析多相机图像、状态与动作；统一到模型 action_dim；缺失视角用 mask 处理。</p>
               <p><b>R1Outputs</b>：从高维动作截取回 21 维关节控制量，直达执行。</p>
               <p><b>主干</b>：PaliGemma 感知 + π0 流匹配连续动作，支持高频动作块。</p>
@@ -269,7 +317,7 @@ export default function HOKShowcase() {
 
       {/* 数据与训练 */}
       <Section id="data" title="数据收集与训练配置">
-        <Tabs defaultValue="collect">
+        <Tabs defaultValue="collect" className="w-full">
           <TabsList className="max-w-full overflow-x-auto">
             <TabsTrigger value="collect">数据收集</TabsTrigger>
             <TabsTrigger value="label">标签与治理</TabsTrigger>
@@ -284,7 +332,7 @@ export default function HOKShowcase() {
                 </CardHeader>
                 <CardContent>
                   <figure className="aspect-video bg-muted rounded-xl flex items-center justify-center">
-                    <span className="text-sm text-gray-600">（替换为 Joylo 实拍图）</span>
+                    <span className="text-sm text-muted-foreground">（替换为 Joylo 实拍图）</span>
                   </figure>
                 </CardContent>
               </Card>
@@ -294,7 +342,7 @@ export default function HOKShowcase() {
                   <CardDescription>覆盖移动、抓取、放置、避障、环境复位等核心环节。</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <ul className="text-sm text-gray-600 space-y-2">
+                  <ul className="text-sm text-muted-foreground space-y-2">
                     <li>• 10,000+ 轨迹，&gt;10TB 数据体量</li>
                     <li>• 5 个大任务，长短序混合</li>
                     <li>• 真实办公场景，抗域外偏移</li>
@@ -310,17 +358,17 @@ export default function HOKShowcase() {
                 <CardDescription>success / fail / imperfection 三类标签；采样率重设、时序对齐与质量筛选。</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-3 gap-4 text-sm text-gray-600">
+                <div className="grid md:grid-cols-3 gap-4 text-sm text-muted-foreground">
                   <div>
-                    <h4 className="font-medium text-gray-900">成功（perfect）</h4>
+                    <h4 className="font-medium text-foreground">成功（perfect）</h4>
                     <p>裁剪 + 降帧 → 直用于行为克隆。</p>
                   </div>
                   <div>
-                    <h4 className="font-medium text-gray-900">不完美（imperfect）</h4>
+                    <h4 className="font-medium text-foreground">不完美（imperfect）</h4>
                     <p>可并入成功数据以扩展分布，提升泛化。</p>
                   </div>
                   <div>
-                    <h4 className="font-medium text-gray-900">失败（failed）</h4>
+                    <h4 className="font-medium text-foreground">失败（failed）</h4>
                     <p>与 RL 结合赋予惩罚信号，增强恢复能力。</p>
                   </div>
                 </div>
@@ -334,7 +382,7 @@ export default function HOKShowcase() {
                 <CardDescription>“预训练 → 后训练”两阶段策略 + 自回归 whole-body 去噪。</CardDescription>
               </CardHeader>
               <CardContent>
-                <ul className="text-sm text-gray-600 space-y-2">
+                <ul className="text-sm text-muted-foreground space-y-2">
                   <li>• 预训练：大规模多平台多任务数据（含 OXE 等），学习物理常识与自恢复。</li>
                   <li>• 微调：高质量办公场景数据上精调，实现稳定长序执行。</li>
                   <li>• 推理：按运动学树顺序生成动作，低延迟高精度。</li>
@@ -355,7 +403,7 @@ export default function HOKShowcase() {
             </CardHeader>
             <CardContent>
               <figure className="aspect-video bg-muted rounded-xl flex items-center justify-center">
-                <span className="text-sm text-gray-600">（替换为演示视频或序列帧）</span>
+                <span className="text-sm text-muted-foreground">（替换为演示视频或序列帧）</span>
               </figure>
             </CardContent>
           </Card>
@@ -366,7 +414,7 @@ export default function HOKShowcase() {
             </CardHeader>
             <CardContent>
               <figure className="aspect-video bg-muted rounded-xl flex items-center justify-center">
-                <span className="text-sm text-gray-600">（替换为演示视频或序列帧）</span>
+                <span className="text-sm text-muted-foreground">（替换为演示视频或序列帧）</span>
               </figure>
             </CardContent>
           </Card>
@@ -377,7 +425,7 @@ export default function HOKShowcase() {
             </CardHeader>
             <CardContent>
               <figure className="aspect-video bg-muted rounded-xl flex items-center justify-center">
-                <span className="text-sm text-gray-600">（替换为语音理解演示视频）</span>
+                <span className="text-sm text-muted-foreground">（替换为语音理解演示视频）</span>
               </figure>
             </CardContent>
           </Card>
@@ -391,7 +439,7 @@ export default function HOKShowcase() {
             </CardHeader>
             <CardContent>
               <figure className="aspect-[16/6] bg-muted rounded-xl flex items-center justify-center">
-                <span className="text-sm text-gray-600">（在此放置图表组件或一张静态图）</span>
+                <span className="text-sm text-muted-foreground">（在此放置图表组件或一张静态图）</span>
               </figure>
             </CardContent>
           </Card>
@@ -409,13 +457,13 @@ export default function HOKShowcase() {
               <CardTitle>HOK · 团队成员</CardTitle>
               <CardDescription>指导教师：俞扬</CardDescription>
             </CardHeader>
-            <CardContent className="grid sm:grid-cols-2 gap-4 text-sm text-gray-600">
+            <CardContent className="grid sm:grid-cols-2 gap-4 text-sm text-muted-foreground">
               <div>
-                <h4 className="font-medium text-gray-900">王浩楠（23级 本科）</h4>
+                <h4 className="font-medium text-foreground">王浩楠（23级 本科）</h4>
                 <p>硬件平台维护、专家轨迹采集与增强；Office Bench 实物环境搭建与策略部署验证。</p>
               </div>
               <div>
-                <h4 className="font-medium text-gray-900">罗文宇（23级 本科）</h4>
+                <h4 className="font-medium text-foreground">罗文宇（23级 本科）</h4>
                 <p>算法架构设计，多模态状态表征，抗干扰与容错模块，训练与鲁棒性评估。</p>
               </div>
             </CardContent>
@@ -425,7 +473,7 @@ export default function HOKShowcase() {
               <CardTitle>应用前景</CardTitle>
               <CardDescription>智能办公助理 · 新零售拣货 · 智慧康养服务 · 工业/户外拓展</CardDescription>
             </CardHeader>
-            <CardContent className="text-sm text-gray-600">
+            <CardContent className="text-sm text-muted-foreground">
               我们计划继续优化算法，引入 RL 提升泛化与自恢复，推进接口开放与生态共建，加速走向真实复杂场景落地。
             </CardContent>
           </Card>
@@ -439,7 +487,7 @@ export default function HOKShowcase() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2"><FileText className="w-5 h-5"/> 论文与基准</CardTitle>
             </CardHeader>
-            <CardContent className="text-sm text-gray-600 space-y-2">
+            <CardContent className="text-sm text-muted-foreground space-y-2">
               <p>[BEHAVIOR Robot Suite] Streamlining Real-World Whole-Body Manipulation for Everyday Activities, 2025.</p>
               <p>[π0] A Vision-Language-Action Flow Model for General Robot Control, 2024/10.</p>
               <p>[Transformer] Attention is All You Need, 2017.</p>
@@ -453,9 +501,9 @@ export default function HOKShowcase() {
               <CardDescription>将你们的 Git / Demo / 数据集入口放在这里</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-3">
-              <Button><a href="#" target="_blank" rel="noreferrer">GitHub</a></Button>
-              <Button><a href="#" target="_blank" rel="noreferrer">在线演示</a></Button>
-              <Button><a href="#" target="_blank" rel="noreferrer">数据样例</a></Button>
+              <Button variant="outline" size="sm" asChild><a href="#" target="_blank" rel="noreferrer"><Github className="w-4 h-4 mr-2"/> GitHub</a></Button>
+              <Button variant="outline" size="sm" asChild><a href="#" target="_blank" rel="noreferrer"><PlayCircle className="w-4 h-4 mr-2"/> 在线演示</a></Button>
+              <Button variant="outline" size="sm" asChild><a href="#" target="_blank" rel="noreferrer"><Database className="w-4 h-4 mr-2"/> 数据样例</a></Button>
             </CardContent>
           </Card>
         </div>
@@ -467,12 +515,12 @@ export default function HOKShowcase() {
           <CardContent className="py-6">
             <div className="grid md:grid-cols-2 gap-6 items-start">
               <div>
-                <p className="text-sm text-gray-600">感谢课题组老师与同学的支持与协作，特别感谢在点云融合与 ROS 领域给予技术帮助的伙伴。欢迎交流合作与应用落地。</p>
+                <p className="text-sm text-muted-foreground">感谢课题组老师与同学的支持与协作，特别感谢在点云融合与 ROS 领域给予技术帮助的伙伴。欢迎交流合作与应用落地。</p>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <Badge>PaliGemma</Badge>
-                  <Badge>π0</Badge>
-                  <Badge>Whole-Body</Badge>
-                  <Badge>IL + RL</Badge>
+                  <Badge variant="secondary">PaliGemma</Badge>
+                  <Badge variant="secondary">π0</Badge>
+                  <Badge variant="secondary">Whole-Body</Badge>
+                  <Badge variant="secondary">IL + RL</Badge>
                 </div>
               </div>
               <form className="grid gap-3">
@@ -487,7 +535,7 @@ export default function HOKShowcase() {
       </Section>
 
       <footer className="border-t py-10 mt-8">
-        <div className="mx-auto max-w-6xl px-4 text-sm text-gray-600 flex flex-col md:flex-row items-center justify-between gap-3">
+        <div className="mx-auto max-w-6xl px-4 text-sm text-muted-foreground flex flex-col md:flex-row items-center justify-between gap-3">
           <p>© {new Date().getFullYear()} HOK · 长序协整</p>
           <p>Made with ❤️ by Team HOK</p>
         </div>
