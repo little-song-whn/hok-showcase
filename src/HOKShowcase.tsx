@@ -179,10 +179,11 @@ export default function HOKShowcase() {
             <Card className="rounded-3xl">
               <CardContent className="p-0 overflow-hidden">
                 <figure className="aspect-video w-full bg-muted flex items-center justify-center">
-                  <div className="text-center p-6">
-                    <Bot className="w-10 h-10 mx-auto"/>
-                    <p className="mt-3 text-sm text-muted-foreground">在此嵌入真机视频或效果大图（支持外链）</p>
-                  </div>
+                  <img
+                    src="/images/hero.jpg"
+                    alt="系统效果图"
+                    className="w-full h-full object-cover"
+                  />
                 </figure>
               </CardContent>
             </Card>
