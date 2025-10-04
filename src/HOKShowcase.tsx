@@ -59,7 +59,11 @@ function MediaImage({ src, alt, className = "" }: { src: string; alt?: string; c
     <img src={src} alt={alt ?? "image"} className={`block ${className}`} onError={() => setOk(false)} />
   ) : (
     <figure className={`bg-muted rounded-xl flex items-center justify-center ${className}`}>
-      <span className="text-sm text-gray-600">（图片占位：请把文件放到 /public/images，例如 {src}）</span>
+      <img
+        src="/images/hok-hero.jpg"
+        alt="系统效果图"
+        className="rounded-2xl w-full h-full object-cover"
+      />
     </figure>
   );
 }
@@ -70,7 +74,14 @@ function MediaVideo({ src, poster, className = "", autoPlay=false, loop=false, m
     <video src={src} poster={poster} controls className={`block ${className}`} autoPlay={autoPlay} loop={loop} muted={muted} onError={() => setOk(false)} />
   ) : (
     <figure className={`bg-muted rounded-xl flex items-center justify-center ${className}`}>
-      <span className="text-sm text-gray-600">（视频占位：请把文件放到 /public/videos，例如 {src}）</span>
+      <video
+          src="/videos/demo-basket.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="rounded-2xl shadow-lg w-full h-full object-cover"
+      />
     </figure>
   );
 }
@@ -182,7 +193,7 @@ export default function HOKShowcase() {
                   <img
                     src="/images/hok-hero.jpg"
                     alt="系统效果图"
-                    className="w-full h-full object-cover"
+                    className="rounded-2xl w-full h-full object-cover"
                   />
                 </figure>
               </CardContent>
@@ -225,7 +236,7 @@ export default function HOKShowcase() {
       </Section>
 
       {/* 媒体库：请把图片放到 /public/images，视频放到 /public/videos */}
-      <Section id="media" title="媒体库" subtitle="将素材放到项目的 /public/images 与 /public/videos 目录，部署后即可通过 CDN 加速加载。">
+      <Section id="media" title="媒体库" subtitle="视频事例">
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="rounded-2xl">
             <CardHeader>
@@ -333,7 +344,7 @@ export default function HOKShowcase() {
                 </CardHeader>
                 <CardContent>
                   <figure className="aspect-video bg-muted rounded-xl flex items-center justify-center">
-                    <span className="text-sm text-muted-foreground">（替换为 Joylo 实拍图）</span>
+                    <img src="/images/joylo.jpg" alt="Joylo Setup" className="w-full h-full object-cover rounded-xl"/>
                   </figure>
                 </CardContent>
               </Card>
@@ -404,7 +415,14 @@ export default function HOKShowcase() {
             </CardHeader>
             <CardContent>
               <figure className="aspect-video bg-muted rounded-xl flex items-center justify-center">
-                <span className="text-sm text-muted-foreground">（替换为演示视频或序列帧）</span>
+                <video
+                  src="/videos/demo-basket.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="rounded-2xl shadow-lg w-full h-full object-cover"
+                />
               </figure>
             </CardContent>
           </Card>
@@ -415,7 +433,14 @@ export default function HOKShowcase() {
             </CardHeader>
             <CardContent>
               <figure className="aspect-video bg-muted rounded-xl flex items-center justify-center">
-                <span className="text-sm text-muted-foreground">（替换为演示视频或序列帧）</span>
+                <video
+                  src="/videos/demo-board.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="rounded-2xl shadow-lg w-full h-full object-cover"
+                />
               </figure>
             </CardContent>
           </Card>
@@ -426,7 +451,14 @@ export default function HOKShowcase() {
             </CardHeader>
             <CardContent>
               <figure className="aspect-video bg-muted rounded-xl flex items-center justify-center">
-                <span className="text-sm text-muted-foreground">（替换为语音理解演示视频）</span>
+                <video
+                  src="/videos/demo-cola.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="rounded-2xl shadow-lg w-full h-full object-cover"
+                />
               </figure>
             </CardContent>
           </Card>
@@ -440,7 +472,11 @@ export default function HOKShowcase() {
             </CardHeader>
             <CardContent>
               <figure className="aspect-[16/6] bg-muted rounded-xl flex items-center justify-center">
-                <span className="text-sm text-muted-foreground">（在此放置图表组件或一张静态图）</span>
+                <img
+                  src="/images/hok-compare.jpg"
+                  alt="系统效果图"
+                  className="rounded-2xl w-full h-full object-cover"
+                />
               </figure>
             </CardContent>
           </Card>
